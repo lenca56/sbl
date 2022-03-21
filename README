@@ -36,3 +36,5 @@ it saves the converted dataframes as "Batch" + str(batch) + "/PolarCoordinates_A
 - ear_rotation_whole_video(batch, animall) = functoin plotting the same as above but now across the whole video in order to check if there is a ear rotation tendency happening throughout the video due to increasing stress
 
 Step 3:
+Run through "LaplacianEigenMaps_Step3.ipynb":
+
