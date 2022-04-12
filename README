@@ -1,0 +1,40 @@
+Step 0: 
+First, manually edit column names of the .csv files that come out of DLC such that the columns are now of the form "Frames","Ear1.X","Ear1.Y","Ear1.L","Ear2.X",etc.
+Then run through "ExtractingOutliers&Expressions_Step0.ipynb" which mainly does some initial preprocessing and preanalysis of data
+- this sets any particular frame with a bodypart of likelihood under 0.95 to missing values for all body parts
+- checks how many missing value frames happen across stimuli intervals
+- further extracts "outlier" frames by checking all frames for which a bodypart "jumps" a high distance between consecutive frames, then one can manually check in fiji if the jump is due to a true jump or a wrong label
+- then dropping all likelihood columns "something.L"
+- then creates intervals of interest for further analysis by importing stimulus start times and then subtracting a few seconds before and a few seconds after 
+- defines generalized plot function for the facial expressions
+- defines baseline expression by averaging facial expressions across a non-stimulus interval
+- looks at what facial expressions looks like at the maximal Euclidian distance point from the baseline for each stimulus interval
+Documents that should come out of this script for future scripts to work well, one of each of the 4 types for a single animal whose identity is given by batch number and animal number:
+- "Batch" + str(batch) + "/OutputAnimal" + str(batch) + str(animall) + ".csv" which is dataframe with bodypart coordinates after Step0 processing
+- "Batch" + str(batch) + "/list_start" + str(batch) + str(animall) + ".csv" which is the stimulus start time (in frame number)
+- "Batch" + str(batch) + "/list_end" + str(batch) + str(animall) + ".csv" which is the end time of the stimulus interval of interest (in frame number)
+- "Batch" + str(batch) + "/BaselineExpression" + str(batch) + str(animall) + ".csv" which is the facial expression X and Y coordinates for the avaraged baseline expression found in Step 0
+
+Step 1:
+Run through "FacialExpressionsMahalanobis_Step1.ipynb":
+- mahalanobis_maximal(batch,animal) = function plotting facial expression of maximal Mahalanobis distance from baseline
+- mahalanobis_all_peaks(batch,animal) = function looking at facial expression at any of the peaks in the Mahalanobis distance from baseline vs time plot
+- prototype_mahalanobis(batch,animal) = function calculating prototypical facial expressions by averaging the maximal facial expression across all trials for a particular stimulus
+- distance_to_baseline_averaged(batch,animal, stim) = function plotting Mahalanobis distance vs time averaged across all trials and showing standard deviation
+- distance_to_baseline_averaged_all_animals(batch) = does the same thing as previous but now averaged across all animals, standard deviation across trials after averaged across all animals
+- distance_to_baseline_averaged_all_animals_std(batch) = does same as previous but standard deviation is across animals, not trials
+- mahalanobis_maximal_shock_two_intervals(batch, animall) = function looking at maximal facial expressions in two distinct shock intervals to try to distinguish an "early" vs a "late" shock behavioral response
+- facial_expressions_trajectories_time(batch, animall) = function looking at progress of facial expresssion over time
+- similarity_index(batch, animall) = function creating two "similarity" measures to compare any facial expression to a prototypical expression. one is pearson r correlation between facial expression and prototype, the other is Mahalanobis distance between the two. both are normalized by subtracting the value of the measure at the baseline facial expression
+
+
+Step 2:
+Run through "FacialExpressions_PolarCoordinates_Step2.ipynb":
+- df_transform_polar(batch,animall) = function transforming all bodypart coordinates to polar coordinates (angle and distance), and normalize by subtracting baseline; 
+it saves the converted dataframes as "Batch" + str(batch) + "/PolarCoordinates_Animal" + str(batch) + str(animall) + ".csv"
+- ear_rotation_trials(batch, animall) = function plotting angle of earpoint Ear3 vs time for each trial/stimulus (that value represents how much the 3rd point of the ear, which is the top of the ear, rotates with respect to the initial baseline position)
+- ear_rotation_whole_video(batch, animall) = functoin plotting the same as above but now across the whole video in order to check if there is a ear rotation tendency happening throughout the video due to increasing stress
+
+Step 3:
+Run through "LaplacianEigenMaps_Step3.ipynb":
+
